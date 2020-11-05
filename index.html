@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <title>My first three.js app</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r122/three.js"></script>
+		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script>
+		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
+
+
+		<style>
+			body { margin: 0; }
+			canvas { display: block; }
+		</style>
+	</head>
+	<body>
+		<p style="position: absolute;color: wheat;z-index: 100;"></p>
+		<script>
+
+			document.body.addEventListener('mousemove',(e)=>{
+	
+			})
+		
+			const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+		    scene.background = new THREE.Color(  0xffffff);
+			const manager = new THREE.LoadingManager()
+			const loader = new THREE.GLTFLoader();
+
+			var a;
+			loader.load( 'route/scene.gltf', function ( gltf ) {
+		
+			scene.add( gltf.scene );
+		     
+			gltf.scene.rotation.y =Math.PI*0.7
+			gltf.scene.rotation.x =Math.PI*-0.2
+			gltf.scene.rotation.z =Math.PI*0.4
+			
+			a = gltf.scene;
+             }, undefined, function ( error ) {
+
+	          console.error( error );
+
+			   } );
+
+           /*
+          loader.load( 'viking_room/scene.gltf', function ( gltf ) {
+			gltf.scene.castShadow = true;
+			gltf.scene.receiveShadow = false;
+			scene.add( gltf.scene );
+			const tl = gsap.timeline({repeat:-1});
+			 tl.to(gltf.scene.position,{duration:2.4,y:-5,ease:Power1.easeOut})
+			 tl.to(gltf.scene.position,{duration:2.4,y:0,ease:Power1.easeOut})
+			console.log('done')
+        
+             }, undefined, function ( error ) {
+
+	          console.error( error );
+
+			   } );
+			   */
+			   const controls = new THREE.OrbitControls( camera , renderer.domElement );
+			controls.update();
+			camera.position.set( 6, 6, 6 );
+			camera.lookAt(0,0,0);
+		  
+
+			renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+
+			   const light = new THREE.DirectionalLight(0xffffff,0.8)
+
+			   light.position.set(200,200,200);
+		
+			   scene.add( light );
+
+			   const planeGeometry = new THREE.PlaneBufferGeometry( 500, 500, 1, 1	);
+               const planeMaterial = new THREE.MeshStandardMaterial( { color: 0xffffff } )
+			   const plane = new THREE.Mesh( planeGeometry, planeMaterial );
+			   const planeup = new THREE.Mesh( planeGeometry, planeMaterial );
+			   const planedown = new THREE.Mesh( planeGeometry, planeMaterial );
+               plane.receiveShadow = true;
+			   scene.add( plane );
+			   scene.add(planeup);
+			   scene.add(planedown);
+			   planeup.position.z=-22;
+			   planedown.position.z=-22;
+			   planedown.position.x=-22;
+			   planedown.rotation.y=Math.PI/2;
+			   plane.position.z=-22;
+			   plane.position.y=-300;
+			   plane.rotation.x=- Math.PI/2;
+			   
+
+			   
+			      const animate = function () {
+				requestAnimationFrame( animate );
+				a.rotation.x +=0.01;
+				a.rotation.y +=0.01;
+                renderer.render( scene, camera );
+                
+			};
+
+            animate();
+            
+
+
+
+		</script>
+	</body>
+</html>
